@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:18.1-alpine
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 10s
+      timeout: 3s
+      retries: 2
+    ports:
+      - ${DB_PORT:-5432}:5432
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DATABASE: ${DB_NAME:-postgres}
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_TIMEZONE: "Europe/Moscow"
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
